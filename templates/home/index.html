@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<br>
+
+    <h1>Home Page!</h1>
+
+    <ul class="list-group">
+        {% for name in names %}
+
+        <li class="list-group-item">
+            <h1>{{ name }}</h1>
+        </li>
+
+        {% endfor %}
+
+
+    </ul>
+
+    <br>
+
+
+{% endblock %}
