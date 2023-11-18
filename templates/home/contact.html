@@ -4,8 +4,15 @@
 
 {% block content %}
     <br>
+    {% if messages %}
+    	{% for message in messages %}
+            <div {% if message.tags %}
+                class="alert alert-{{ message.tags }}"
+            {% endif %} >{{ message }}</div>
+    	{% endfor %}
+    {% endif %}
     <h1>Contact Form: </h1>
-    <form action="{% url 'contact' %}" method="POST">
+    <form action="{% url 'home:contact' %}" method="POST">
         {% csrf_token %}
         {{ form|crispy }}
         <button class="btn btn-success">Submit</button>

@@ -5,7 +5,14 @@
 
 {% block content %}
     <br>
-    <form action="{% url 'posts-save' %}" method="post" enctype="multipart/form-data">
+    {% if messages %}
+    	{% for message in messages %}
+            <div {% if message.tags %}
+                class="alert alert-{{ message.tags }}"
+            {% endif %} >{{ message }}</div>
+    	{% endfor %}
+    {% endif %}
+    <form action="{% url 'posts:posts-form' %}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             {% csrf_token %}
             {{ form|crispy }}

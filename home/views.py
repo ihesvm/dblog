@@ -1,4 +1,4 @@
-
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
@@ -36,21 +36,21 @@ from django.views.generic.edit import FormMixin
 #     return redirect('contact')
 
 
-
-class ContactView(View, FormMixin):
+class ContactView(View):
     # form_class = ContactForm
-    form_class = ContactForm
-    
-    def get(self, request, *args, **kwargs):
-        form = ContactForm()
 
-        return render(request, 'home/contact.html', {'form': form})
-    
+    __form = ContactForm
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'home/contact.html', {'form': self.__form()})
 
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
-            form = ContactForm(request.POST)
+            form = self.__form(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('home')
-        return redirect('contact')
+                messages.success(request, 'Contact Created !!!')
+                return redirect('home:home')
+
+        messages.warning(request, 'Contact Error !!!')
+        return redirect('home:contact')

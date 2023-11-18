@@ -12,7 +12,7 @@
                         <p class="">Publish Date: {{ post.pub_date }}</p>
                         <hr>
                         <p class="card-text">{{ post.body }}</p>
-                        <a href="{% url 'posts-get' slug=post.slug %}" class="btn btn-primary">Go somewhere</a>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Go somewhere</a>
                     </div>
                 </div>
                 <br>

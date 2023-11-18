@@ -1,4 +1,6 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils.datetime_safe import datetime
 from django.utils.text import slugify
 
@@ -16,10 +18,9 @@ class PostManager(models.Manager):
         return self.filter(publish=True).order_by('-pub_date')
 
 
-
-
 # Create your models here.
 class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=255)
     body = models.TextField(max_length=1000)
     slug = models.SlugField(null=True, blank=True)
@@ -41,3 +42,11 @@ class Post(models.Model):
         if self.publish:
             self.pub_date = datetime.now()
         return super(Post, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('posts:posts-get', args=[str(self.slug)])
+
+    class Meta:
+        indexes = [models.Index(fields=('title', 'slug'))]
+        verbose_name = 'Post'
+        verbose_name_plural = 'Post'
