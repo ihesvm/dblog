@@ -6,7 +6,7 @@ from posts.models import Post
 # Register your models here.
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'publish']
+    list_display = ['author', 'colored_name', 'slug', 'publish']
 
     list_filter = ['pub_date', 'update_at']
     prepopulated_fields = {"slug": ['title']}
@@ -15,7 +15,7 @@ class PostAdmin(admin.ModelAdmin):
         (
             "Post",
             {
-                "fields": ['title', 'body', 'slug', 'image']
+                "fields": ['author', 'title', 'body', 'slug', 'image']
             }
         ),
         (

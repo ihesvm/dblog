@@ -3,3 +3,5 @@
 .idea/
 db.sqlite3
 node_modules/
+data.json
+test_app.py

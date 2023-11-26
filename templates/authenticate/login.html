@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+    <br>
+    {% include 'components/messages.html' %}
+    <form action="{% url 'home:login' %}" method="post">
+        <div class="mb-3">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">Login</button>
+        </div>
+    </form>
+{% endblock %}

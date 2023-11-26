@@ -3,21 +3,10 @@
 
 {% block content %}
     <br>
+    {% include 'components/messages.html' %}
     <div class="row">
         {% for post in object_list %}
-            <div class="col-sm-6 mb-3 mb-sm-0">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="">Publish Date: {{ post.pub_date }}</p>
-                        <hr>
-                        <p class="card-text">{{ post.body }}</p>
-                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-                <br>
-            </div>
+            {% include 'components/posts/cards.html' %}
         {% endfor %}
-
     </div>
 {% endblock %}

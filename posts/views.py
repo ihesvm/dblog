@@ -1,6 +1,8 @@
 from typing import Any
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -17,17 +19,12 @@ from django.views.generic import ListView, DetailView
 #
 #     return render(request, 'posts/all_posts.html', {'posts': posts})
 
-
+# @login_required
 # def all_posts(request):
 #     posts = Post.posts.published()
 #
 #     return render(request, 'posts/all_posts.html', {'posts': posts})
 #
-
-class PostListView(ListView):
-    model = Post
-    queryset = Post.posts.published()
-    template_name = 'posts/all_posts.html'
 
 
 # def get_posts(request, slug):
@@ -80,7 +77,7 @@ class PostDetail(DetailView):
 #     return redirect('posts-form')
 
 
-class PostView(View):
+class PostView(LoginRequiredMixin, View):
     __form = PostForm
 
     def get(self, request):
@@ -90,6 +87,7 @@ class PostView(View):
         if request.method == 'POST':
             form = self.__form(request.POST, request.FILES)
             if form.is_valid():
+                form.instance.author = request.user
                 form.save()
                 messages.success(request, 'Post Created !!!')
                 return redirect('home:home')
