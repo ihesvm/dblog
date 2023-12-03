@@ -1,20 +1,28 @@
 {% if post.image %}
     <div class="card mb-3">
-        <img src="{{ post.image.url }}" class="card-img-top" alt="...">
+        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
         <div class="card-body">
             <h5 class="card-title">{{ post.title|title }}</h5>
             <p class="card-text">Body</p>
-            <p class="card-text"><small class="text-body-secondary">{{ post.pub_date }}</small></p>
+            <p class="card-text"><small class="text-body-secondary">Publishe Date: {{ post.pub_date }}</small></p>
+            <p class="card-text"><small class="text-body-secondary">Author: {{ post.author.username }}</small></p>
+            {% if post.author == request.user %}
+                <a href="{% url 'posts:posts-update' post.slug %}" class="btn btn-primary">Update</a>
+                <a href="{% url 'posts:posts-delete' post.slug %}" class="btn btn-outline-danger">Delete</a>
+            {% endif %}
         </div>
     </div>
 
 {% else %}
     <div class="card mb-3">
-{#        <img src="{{ post.image.url }}" class="card-img-top" alt="...">#}
         <div class="card-body">
             <h5 class="card-title">{{ post.title|title }}</h5>
             <p class="card-text">Body</p>
             <p class="card-text"><small class="text-body-secondary">{{ post.pub_date }}</small></p>
+            {% if post.author == request.user %}
+                <a href="{% url 'posts:posts-update' post.slug %}" class="btn btn-primary">Update</a>
+                <a href="{% url 'posts:posts-delete' post.slug %}" class="btn btn-outline-danger">Delete</a>
+            {% endif %}
         </div>
     </div>
 {% endif %}

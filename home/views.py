@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-from home.forms import ContactForm, SignupForm, LoginForm
+from category.models import Category
+from home.forms import ContactForm, SignupForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 from django.views.generic import CreateView, View, ListView
 from django.views.generic.edit import FormMixin
 
@@ -43,6 +45,13 @@ class PostListView(ListView):
     model = Post
     queryset = Post.posts.published()
     template_name = 'posts/all_posts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['category'] = Category.objects.all()
+
+        return context
 
 
 class ContactView(View):
@@ -111,3 +120,41 @@ class LoginView(View):
 def user_logout(request):
     logout(request)
     return redirect('home:login')
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+        context = {
+            'u_form': user_form,
+            'p_form': profile_form,
+        }
+
+        return render(request, 'user/profile.html', context)
+
+    def post(self, request):
+        user_form = UserUpdateForm(
+            request.POST,
+            instance=request.user
+        )
+
+        profile_form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile
+        )
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            messages.success(request, 'User Profile Updated!!!')
+
+            return redirect('home:home')
+
+        else:
+            messages.warning(request, 'Error Updated Profile!!!')
+
+            return redirect('home:home')

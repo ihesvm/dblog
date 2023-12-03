@@ -9,6 +9,8 @@ from django.utils.html import format_html
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from category.models import Category
+
 
 # class PostManager(models.Manager):
 #     def just_published(self):
@@ -23,11 +25,6 @@ class PostManager(models.Manager):
         return self.filter(publish='p').order_by('-pub_date')
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
 
 
 # Create your models here.
@@ -39,7 +36,7 @@ class Post(models.Model):
         __empty__ = _('Empty')
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    category = models.ForeignKey("Category", on_delete=models.CASCADE, null=True, blank=True, related_name="posts")
+    category = models.ManyToManyField(Category, null=True, blank=True, related_name="posts")
     title = models.CharField(max_length=255)
     body = models.TextField(max_length=1000)
     slug = models.SlugField(null=True, blank=True, unique=True)

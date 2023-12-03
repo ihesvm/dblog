@@ -11,5 +11,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name="login"),
     path('register/', views.SignupView.as_view(), name="register"),
     path('logout/', views.user_logout, name="logout"),
+    path('profile/', views.ProfileView.as_view(), name="profile"),
     # path('save/contact/', views.save_contact, name="save-contact"),
 ]

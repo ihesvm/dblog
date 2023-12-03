@@ -15,7 +15,7 @@ class PostAdmin(admin.ModelAdmin):
         (
             "Post",
             {
-                "fields": ['author', 'title', 'body', 'slug', 'image']
+                "fields": ['category', 'author', 'title', 'body', 'slug', 'image']
             }
         ),
         (

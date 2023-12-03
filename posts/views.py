@@ -5,11 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.views import View
 
 from posts.forms import PostForm
 from posts.models import Post
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
 
 # Create your views here.
@@ -45,10 +46,13 @@ from django.views.generic import ListView, DetailView
 class PostDetail(DetailView):
     model = Post
     template_name = 'posts/get_posts.html'
+    slug_url_kwarg = 'slug'
 
-    def get_queryset(self):
-        slug = self.kwargs['slug']
-        return Post.objects.filter(slug=slug)
+
+
+    # def get_queryset(self):
+    #     slug = self.kwargs['slug']
+    #     return Post.objects.filter(slug=slug)
 
 
 # def save_form(request):
@@ -94,3 +98,40 @@ class PostView(LoginRequiredMixin, View):
 
         messages.warning(request, 'Post Error !!!')
         return redirect('posts:posts-form')
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    success_url = reverse_lazy('home:home')
+    template_name = 'posts/posts_form.html'
+    fields = ['title', 'body', 'publish', 'image', 'category']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        messages.success(self.request, 'Post Created !!!')
+        return super().form_valid(form)
+
+
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('home:home')
+    slug_url_kwarg = 'slug'
+
+    template_name = 'posts/confirm_delete.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Post Deleted!!!')
+        return super().form_valid(form)
+
+
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['title', 'body', 'publish', 'image', 'category']
+    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('home:home')
+    template_name = 'posts/update_post.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Post Updated!!!')
+        return super().form_valid(form)

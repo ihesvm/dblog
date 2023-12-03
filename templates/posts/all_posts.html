@@ -2,7 +2,12 @@
 
 
 {% block content %}
-    <br>
+
+    <div class="mb-4 mt-4 text-center" style="font-size: 18px">
+        {% for cats in category %}
+            <a href="{% url 'category:related-posts' cats.name %}" class="p-1 d-inline-block">{{ cats.name }}</a>
+        {% endfor %}
+    </div>
     {% include 'components/messages.html' %}
     <div class="row">
         {% for post in object_list %}

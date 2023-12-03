@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <h4>Are sure delete "{{ post.title }}"?</h4>
+        <button class="btn btn-danger">Ok</button>
+        <a href="{% url 'home:home' %}" class="btn btn-outline-info">Cancel</a>
+    </form>
+{% endblock %}
