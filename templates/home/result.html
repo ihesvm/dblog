@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+    <div class="row mt-4">
+    <h4>result for: {{ request.GET.q }}</h4>
+        {% for post in object_list %}
+
+            {% include 'components/posts/cards.html' %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

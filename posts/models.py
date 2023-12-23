@@ -8,9 +8,9 @@ from django.utils.datetime_safe import datetime
 from django.utils.html import format_html
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-
+from django.contrib.postgres.search import SearchVector
 from category.models import Category
-
+from django.db.models.functions import Concat
 
 # class PostManager(models.Manager):
 #     def just_published(self):
@@ -23,7 +23,32 @@ from category.models import Category
 class PostManager(models.Manager):
     def published(self):
         return self.filter(publish='p').order_by('-pub_date')
+    
 
+    def search_by_title(self, value):
+        return self.annotate(
+            search=SearchVector('title')
+        ).filter(search__icontains=value)
+
+
+
+class PostQuerySet(models.QuerySet):
+    def get_author_title(self):
+        return self.annotate(
+            at=Concat("title", models.Value(" "), "author__username")
+        )
+    
+
+
+    def get_unique_title(self):
+        return self.aggregate(
+            titles=models.Count("title", distinct=True)
+        )
+    
+
+
+    def get_id(self, id):
+        return self.get(id=id)
 
 
 
@@ -50,7 +75,7 @@ class Post(models.Model):
     views = models.PositiveIntegerField(default=0)
 
     posts = PostManager()
-    objects = models.Manager()
+    objects = PostQuerySet().as_manager()
 
     def __str__(self):
         return self.title

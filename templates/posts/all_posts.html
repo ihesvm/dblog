@@ -3,6 +3,11 @@
 
 {% block content %}
 
+
+<!-- <div id="root">
+[[ message ]]
+</div> -->
+
     <div class="mb-4 mt-4 text-center" style="font-size: 18px">
         {% for cats in category %}
             <a href="{% url 'category:related-posts' cats.name %}" class="p-1 d-inline-block">{{ cats.name }}</a>
@@ -14,4 +19,17 @@
             {% include 'components/posts/cards.html' %}
         {% endfor %}
     </div>
+
+
+
+    <script>
+    
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#root',
+        data: {
+            message: 'Vue App'
+        } 
+    })
+    </script>
 {% endblock %}

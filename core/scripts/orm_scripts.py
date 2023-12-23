@@ -2,7 +2,7 @@ from django.contrib.postgres.search import SearchVector
 from django.db import connection
 from django.db.models import Q, F, Max, Min, Avg, Case, When, Value,Sum
 from django.db.models.functions import Upper
-
+from django.contrib.postgres.search import SearchVector,SearchQuery, SearchRank
 
 from posts.models import Post
 
@@ -52,3 +52,29 @@ from posts.models import Post
 # print("\n")
 #
 # print(connection.queries)
+
+# post = Post.objects.annotate(
+#     search_title=SearchVector('title')
+# ).filter(search_title="new")
+
+
+# print(post)
+
+# vector = SearchVector('title')
+# query = SearchQuery('new')
+# post = Post.objects.annotate(search=SearchRank(vector, query)).order_by('search')
+
+
+# post = Post.objects.get_author_title()
+# print(post[0].at)
+
+post = Post.objects.get_unique_title()
+
+print(post)
+
+print("\n")
+
+print(connection.queries)
+
+
+

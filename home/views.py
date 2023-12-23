@@ -1,6 +1,8 @@
+from typing import Any
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
@@ -10,7 +12,8 @@ from django.views.generic import CreateView, View, ListView
 from django.views.generic.edit import FormMixin
 
 from posts.models import Post
-
+from django.contrib.postgres.search import SearchVector
+from django.db.models import Q
 
 # Create your views here.
 
@@ -52,6 +55,14 @@ class PostListView(ListView):
         context['category'] = Category.objects.all()
 
         return context
+
+
+
+
+
+
+
+
 
 
 class ContactView(View):
@@ -158,3 +169,22 @@ class ProfileView(LoginRequiredMixin, View):
             messages.warning(request, 'Error Updated Profile!!!')
 
             return redirect('home:home')
+
+
+class SearchView(ListView):
+    model = Post
+    template_name = 'home/result.html'
+
+
+
+    def get_queryset(self):
+        q = self.request.GET.get('q')
+        
+        if q == '':
+            q = 'None'
+
+        # post = Post.objects.filter(
+        #     Q(title__icontains=q) | Q(title__startswith=q) 
+        # )
+        post = Post.posts.search_by_title(q)
+        return post

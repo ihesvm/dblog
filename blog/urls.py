@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('home.urls', namespace='home')),
     path('posts/', include('posts.urls', namespace='posts')),
     path('category/', include('category.urls', namespace='category')),
+    path('api/', include('api.urls', namespace='api')),
 ]
 
 if settings.DEBUG:
