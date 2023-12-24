@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'category',
     'api',
+    'rest_framework'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

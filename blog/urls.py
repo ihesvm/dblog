@@ -25,6 +25,7 @@ urlpatterns = [
     path('posts/', include('posts.urls', namespace='posts')),
     path('category/', include('category.urls', namespace='category')),
     path('api/', include('api.urls', namespace='api')),
+    path('api-auth/', include('rest_framework.urls'))
 ]
 
 if settings.DEBUG:

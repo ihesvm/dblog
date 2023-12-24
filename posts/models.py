@@ -110,3 +110,10 @@ class Post(models.Model):
         indexes = [models.Index(fields=('title', 'slug'))]
         verbose_name = 'Post'
         verbose_name_plural = 'Post'
+
+
+
+# post = Post.objects.filter(pk=1)
+# postg = Post.objects.get(pk=1)
+
+
