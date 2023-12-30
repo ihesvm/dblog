@@ -7,10 +7,14 @@ from django.db import models
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from posts.forms import PostForm
 from posts.models import Post
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
+
+from posts.serializers import PostSerializer
 
 
 # Create your views here.
@@ -135,3 +139,4 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Post Updated!!!')
         return super().form_valid(form)
+

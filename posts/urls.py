@@ -10,4 +10,5 @@ urlpatterns = [
     path('forms/', views.PostCreateView.as_view(), name="posts-form"),
     path('delete/<slug>/', views.PostDeleteView.as_view(), name="posts-delete"),
     path('update/<slug>/', views.PostUpdateView.as_view(), name="posts-update"),
+    # path('update/<slug>/', views.PostUpdateView.as_view(), name="posts-update"),
 ]
