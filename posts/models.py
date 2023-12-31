@@ -37,6 +37,10 @@ class PostQuerySet(models.QuerySet):
         return self.annotate(
             at=Concat("title", models.Value(" "), "author__username")
         )
+
+
+    def published(self):
+        return self.filter(publish='p').order_by('-pub_date')
     
 
 

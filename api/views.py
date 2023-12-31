@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
 from home.models import Contact
@@ -88,7 +89,7 @@ from rest_framework import status, mixins, generics
 
 
 class ContactApiView(mixins.ListModelMixin,
-                     mixins.RetrieveModelMixin,
+                     mixins.DestroyModelMixin,
                      mixins.UpdateModelMixin,
                      mixins.CreateModelMixin,
                      generics.GenericAPIView):
@@ -102,25 +103,62 @@ class ContactApiView(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        return self.destroy(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
 
+# class PostApiDetail(generics.RetrieveAPIView):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+#
+#
+#
+# class PostApiView(APIView):
+#     def get(self, request):
+#         posts = Post.posts.published()
+#         serializer = PostSerializer(posts, many=True)
+#         return Response(serializer.data)
 
 
-class PostApiDetail(generics.RetrieveAPIView):
-    queryset = Post.objects.all()
+class PostApiView(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  mixins.DestroyModelMixin,
+                  mixins.UpdateModelMixin,
+                  generics.GenericAPIView):
     serializer_class = PostSerializer
+    queryset = Post.objects.published()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 
+class PostApiDetailView(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.published()
 
+    lookup_url_kwarg = 'pk'
 
-class PostApiView(APIView):
+    authentication_classes = [TokenAuthentication]
 
+    http_method_names = ['get']
 
-    def get(self, request):
-        posts = Post.posts.published()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+    #
+    # def get_object(self):
+    #
+    #     post = get_object_or_404(Post, self.kwargs.get('pk'))
+    #
+    #     return post
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
