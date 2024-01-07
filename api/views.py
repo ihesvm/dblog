@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404, render
+# from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from home.models import Contact
@@ -13,9 +16,10 @@ from posts.serializers import PostSerializer
 from rest_framework import status, mixins, generics
 
 
+
 # Create your views here.
 
-
+#
 # def all_posts(request):
 #     posts = Post.objects.all()
 #     data = serializers.serialize('json', posts)
@@ -120,27 +124,53 @@ class ContactApiView(mixins.ListModelMixin,
 #         posts = Post.posts.published()
 #         serializer = PostSerializer(posts, many=True)
 #         return Response(serializer.data)
+class PostApiListView(generics.ListAPIView, generics.GenericAPIView):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    queryset = Post.objects.published()
+    # authentication_classes = [TokenAuthentication]
 
 
-class PostApiView(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+
+class PostApiView(mixins.CreateModelMixin,
                   mixins.DestroyModelMixin,
                   mixins.UpdateModelMixin,
                   generics.GenericAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.published()
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+
+
+
         return self.create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        user = Token.objects.get(user=request.user)
+
+        post = self.get_object()
+
+        if post.author == user:
+            return self.destroy(request, *args, **kwargs)
+
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        user = Token.objects.get(user=request.user)
+
+        post = self.get_object()
+
+
+        if post.author == user:
+            return self.update(request, *args, **kwargs)
 
 
 class PostApiDetailView(mixins.RetrieveModelMixin, generics.GenericAPIView):

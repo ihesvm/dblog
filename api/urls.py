@@ -7,6 +7,7 @@ urlpatterns = [
     path('contact/', views.ContactApiView.as_view()),
     path('posts/<int:pk>/', views.PostApiView.as_view()),
     path('posts/', views.PostApiView.as_view()),
+    path('list/posts/', views.PostApiListView.as_view()),
     path('detail/posts/<int:pk>', views.PostApiDetailView.as_view()),
     # path('posts/<int:pk>/', views.PostApiDetail.as_view(), name='all-posts'),
     # path('detail/posts/<pk>/', views.post_detail, name='detail-posts'),
